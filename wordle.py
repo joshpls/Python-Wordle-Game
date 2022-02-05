@@ -187,9 +187,8 @@ class Board():
         pygame.display.update()
 
 def isValidWord(word):
-    if word.isalpha():
-        return True
-    return False
+    # TODO - Check word against dictionary.
+    return True
 
 def GetCorrectGuesses(board, active_row, word, guess, guessed):
     for i in range(len(word)):
@@ -432,11 +431,14 @@ if __name__ == "__main__":
                                 guess=""
                                 input_active = True
                         else:
-                            print("Invalid Word")
+                            dispTxt = "WORD NOT IN DICTIONARY"
+                            valueTxt = fnt2.render(str(dispTxt), 0, RED)
+                            win.blit(valueTxt, (120, 510))
                     elif event.key == pygame.K_BACKSPACE:
                         if active_col > 0:
                             active_col -= 1
                         board.del_letter(active_row, active_col)
+                        win.fill(BLACK, pygame.Rect(0,510,500, 30))
                         guess = guess[:-1]
 
                     else:
