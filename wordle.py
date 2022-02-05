@@ -8,6 +8,56 @@ import re
 
 pygame.init()
 
+class Button:
+    def __init__(self, text, width, height, pos, win, font):
+        self.win = win
+        self.font = font
+
+        # top rectangle
+        self.top_rect = pygame.Rect(pos,(width, height))
+        self.top_color = (86, 87, 88)   #"#475F77"
+
+        # text
+        self.text_surface = self.font.render(text,True,"#FFFFFF")
+        self.text_rect = self.text_surface.get_rect(center = self.top_rect.center)
+
+    def setColor(self, value):
+        GREEN = (83, 141, 78)
+        YELLOW = (181, 159, 59)
+        BACKGROUND = (18, 18, 19)
+        DARKGREY = (86, 87, 88)
+
+        if value == 2:
+            #Letter is in word and in correct position
+            self.top_color = GREEN
+        elif value == 1:
+            #Letter is in word and in wrong position
+            self.top_color = YELLOW
+        elif value == 0:
+            #Letter is not in word
+            self.top_color = BACKGROUND
+        else:
+            #Letter hasn't been guessed yet
+            self.top_color = DARKGREY
+
+        self.draw()
+
+    
+    def draw(self):
+        pygame.draw.rect(self.win, self.top_color, self.top_rect, border_radius = 6)
+        self.win.blit(self.text_surface, self.text_rect)
+    
+    def is_clicked(self):
+        mouse_pos = pygame.mouse.get_pos()
+        self.pressed = False
+        if self.top_rect.collidepoint(mouse_pos):
+            self.top_color = "#D74B4B"
+        else:
+            self.top_color = "#475F77"
+    
+    def check_pressed(self):
+        return self.pressed == True
+
 class Node:
     GREEN = (83, 141, 78)
     YELLOW = (181, 159, 59)
@@ -170,6 +220,90 @@ def GetCorrectGuesses(board, active_row, word, guess, guessed):
 
     return guessed
 
+def updateGuessColor(guessed):
+    for key, value in guessed.items():
+        if key == 'A':
+            AButton.setColor(value)
+        if key == 'B':
+            BButton.setColor(value)
+        if key == 'C':
+            CButton.setColor(value)
+        if key == 'D':
+            DButton.setColor(value)
+        if key == 'E':
+            EButton.setColor(value)
+        if key == 'F':
+            FButton.setColor(value)
+        if key == 'G':
+            GButton.setColor(value)
+        if key == 'H':
+            HButton.setColor(value)
+        if key == 'I':
+            IButton.setColor(value)
+        if key == 'J':
+            JButton.setColor(value)
+        if key == 'K':
+            KButton.setColor(value)
+        if key == 'L':
+            LButton.setColor(value)
+        if key == 'M':
+            MButton.setColor(value)
+        if key == 'N':
+            NButton.setColor(value)
+        if key == 'O':
+            OButton.setColor(value)
+        if key == 'P':
+            PButton.setColor(value)
+        if key == 'Q':
+            QButton.setColor(value)
+        if key == 'R':
+            RButton.setColor(value)
+        if key == 'S':
+            SButton.setColor(value)
+        if key == 'T':
+            TButton.setColor(value)
+        if key == 'U':
+            UButton.setColor(value)
+        if key == 'V':
+            VButton.setColor(value)
+        if key == 'W':
+            WButton.setColor(value)
+        if key == 'X':
+            XButton.setColor(value)
+        if key == 'Y':
+            YButton.setColor(value)
+        if key == 'Z':
+            ZButton.setColor(value)
+            
+
+def drawGuessedLetters():
+    QButton.setColor(-1)
+    WButton.setColor(-1)
+    EButton.setColor(-1)
+    RButton.setColor(-1)
+    TButton.setColor(-1)
+    YButton.setColor(-1)
+    UButton.setColor(-1)
+    IButton.setColor(-1)
+    OButton.setColor(-1)
+    PButton.setColor(-1)
+    AButton.setColor(-1)
+    SButton.setColor(-1)
+    DButton.setColor(-1)
+    FButton.setColor(-1)
+    GButton.setColor(-1)
+    HButton.setColor(-1)
+    JButton.setColor(-1)
+    KButton.setColor(-1)
+    LButton.setColor(-1)
+    ZButton.setColor(-1)
+    XButton.setColor(-1)
+    CButton.setColor(-1)
+    VButton.setColor(-1)
+    BButton.setColor(-1)
+    NButton.setColor(-1)
+    MButton.setColor(-1)
+
 def checkWin(word, guess):
     if word == guess:
         return True
@@ -192,7 +326,7 @@ if __name__ == "__main__":
     h = 500
     fnt = pygame.font.SysFont("cambria", 40)
     small_fnt = pygame.font.SysFont("cambria", 10)
-    fnt2 = pygame.font.SysFont("cambria", 15)
+    fnt2 = pygame.font.SysFont("cambria", 20)
     word = generateWord()
     guess = ""
     input_active = True
@@ -207,6 +341,64 @@ if __name__ == "__main__":
     board = Board(win, w, h, rows, cols)
 
     board.draw()
+
+    #Initiate First Row of Letters
+    QButton = Button("Q", 30, 30, (55, 550), win, fnt2)
+    QButton.draw()
+    WButton = Button("W", 30, 30, (95, 550), win, fnt2)
+    WButton.draw()
+    EButton = Button("E", 30, 30, (135, 550), win, fnt2)
+    EButton.draw()
+    RButton = Button("R", 30, 30, (175, 550), win, fnt2)
+    RButton.draw()
+    TButton = Button("T", 30, 30, (215, 550), win, fnt2)
+    TButton.draw()
+    YButton = Button("Y", 30, 30, (255, 550), win, fnt2)
+    YButton.draw()
+    UButton = Button("U", 30, 30, (295, 550), win, fnt2)
+    UButton.draw()
+    IButton = Button("I", 30, 30, (335, 550), win, fnt2)
+    IButton.draw()
+    OButton = Button("O", 30, 30, (375, 550), win, fnt2)
+    OButton.draw()
+    PButton = Button("P", 30, 30, (415, 550), win, fnt2)
+    PButton.draw()
+
+    #Initiate Second Row of Letters
+    AButton = Button("A", 30, 30, (75, 590), win, fnt2)
+    AButton.draw()
+    SButton = Button("S", 30, 30, (115, 590), win, fnt2)
+    SButton.draw()
+    DButton = Button("D", 30, 30, (155, 590), win, fnt2)
+    DButton.draw()
+    FButton = Button("F", 30, 30, (195, 590), win, fnt2)
+    FButton.draw()
+    GButton = Button("G", 30, 30, (235, 590), win, fnt2)
+    GButton.draw()
+    HButton = Button("H", 30, 30, (275, 590), win, fnt2)
+    HButton.draw()
+    JButton = Button("J", 30, 30, (315, 590), win, fnt2)
+    JButton.draw()
+    KButton = Button("K", 30, 30, (355, 590), win, fnt2)
+    KButton.draw()
+    LButton = Button("L", 30, 30, (395, 590), win, fnt2)
+    LButton.draw()
+
+    #Initiate Third Row of Letters
+    ZButton = Button("Z", 30, 30, (115, 630), win, fnt2)
+    ZButton.draw()
+    XButton = Button("X", 30, 30, (155, 630), win, fnt2)
+    XButton.draw()
+    CButton = Button("C", 30, 30, (195, 630), win, fnt2)
+    CButton.draw()
+    VButton = Button("V", 30, 30, (235, 630), win, fnt2)
+    VButton.draw()
+    BButton = Button("B", 30, 30, (275, 630), win, fnt2)
+    BButton.draw()
+    NButton = Button("N", 30, 30, (315, 630), win, fnt2)
+    NButton.draw()
+    MButton = Button("M", 30, 30, (355, 630), win, fnt2)
+    MButton.draw()
 
     run = True
 
@@ -227,6 +419,7 @@ if __name__ == "__main__":
                             guessed = GetCorrectGuesses(board, active_row, word, guess, guessed)
 
                             if len(guessed) > 0:
+                                updateGuessColor(guessed)
                                 guessedLetters = ""
 
                                 for key in guessed:
@@ -266,6 +459,8 @@ if __name__ == "__main__":
                         guess = ""
                         guessed = {}
                         win.fill(BLACK)
+                        #win.fill(BLACK, pygame.Rect(0,0,w, h+50))
+                        drawGuessedLetters()
                         input_active = True
                         word = generateWord()
         
