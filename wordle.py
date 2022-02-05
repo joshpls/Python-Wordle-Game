@@ -188,8 +188,7 @@ class Board():
 
 def isValidWord(word):
     if word.isalpha():
-        if len(word) == 5:
-            return True
+        return True
     return False
 
 def GetCorrectGuesses(board, active_row, word, guess, guessed):
@@ -324,6 +323,10 @@ if __name__ == "__main__":
     cols = 5
     w = 500
     h = 500
+    WHITE = (255, 255, 255)
+    BLACK = (0,0,0)
+    GREEN = (83, 141, 78)
+    RED = (201, 67, 52)
     fnt = pygame.font.SysFont("cambria", 40)
     small_fnt = pygame.font.SysFont("cambria", 10)
     fnt2 = pygame.font.SysFont("cambria", 20)
@@ -334,9 +337,6 @@ if __name__ == "__main__":
     active_col = 0
     guessed = {}
     regex = "^[A-Za-z]+$"
-    
-    WHITE = (255, 255, 255)
-    BLACK = (0,0,0)
     
     board = Board(win, w, h, rows, cols)
 
@@ -412,7 +412,7 @@ if __name__ == "__main__":
                     pygame.quit()
                     sys.exit()
                 if input_active:
-                    if event.key == pygame.K_RETURN and len(guess) == 5:
+                    if event.key == pygame.K_RETURN and len(guess) == cols:
                         if isValidWord(guess):
                             input_active = False
                             
@@ -420,16 +420,11 @@ if __name__ == "__main__":
 
                             if len(guessed) > 0:
                                 updateGuessColor(guessed)
-                                guessedLetters = ""
-
-                                for key in guessed:
-                                    guessedLetters = guessedLetters + key + ", "
-
-                                valueTxt = fnt2.render(str(guessedLetters), 0, WHITE)
-                                win.blit(valueTxt, (10, 510))
 
                             if checkWin(word, guess):
-                                print("You won! The word was", word)
+                                dispTxt = "CONGRATS! YOU WON!"
+                                valueTxt = fnt2.render(str(dispTxt), 0, GREEN)
+                                win.blit(valueTxt, (140, 510))
                                 input_active = False
                             else:
                                 active_row += 1
@@ -459,13 +454,14 @@ if __name__ == "__main__":
                         guess = ""
                         guessed = {}
                         win.fill(BLACK)
-                        #win.fill(BLACK, pygame.Rect(0,0,w, h+50))
                         drawGuessedLetters()
                         input_active = True
                         word = generateWord()
         
         if active_row > rows-1 and input_active:
-            print("Game Over! Ran out of guesses! The word was", word)
+            dispTxt = "RAN OUT OF GUESSES! THE WORD WAS: " + word
+            valueTxt = fnt2.render(str(dispTxt), 0, RED)
+            win.blit(valueTxt, (30, 510))
             input_active = False
         
         
