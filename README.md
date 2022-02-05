@@ -1,11 +1,18 @@
-﻿# Python-Wordle-Game
+ # Wordle Game developed in Python
+ - Original Game: https://www.powerlanguage.co.uk/wordle/
  
- Wordle Game developed in Python
- [Still in development]
+ # Description
+ - Wordle is a game where you have to guess the five letter word. You get six guesses before the game is over. If a letter guessed is in the word it will display a color. Green means the letter is in the right position while Yellow means it's in the wrong position. If the guessed letter is not in the word at all, it will be greyed out.
  
- Example:
+ # Features:
+ - Randomly generates a five letter word to choose from on load.
+ - Each letter is displayed with the appropriate color in line and below in the letter display.
+ - Type a five letter word, press [ENTER] to submit your guess.
+ - Press [SPACE] on game over to start a new game.
+ - Press [ESCAPE] to close the window.
+ - Only characters are allowed.
+ - ToDo: Look up word guessed against dictionary.
  
-![image](https://user-images.githubusercontent.com/22349589/152643764-2b0177e1-3740-4c10-9d78-56f57695cd4a.png)
-
-
-References: https://www.powerlanguage.co.uk/wordle/
+ # Example:
+ 
+![image](https://user-images.githubusercontent.com/22349589/152644861-39a23b16-9833-42be-8256-2251feef9dc8.png)
