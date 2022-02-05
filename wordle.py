@@ -4,6 +4,7 @@
 
 import random
 import pygame, sys
+import re
 
 pygame.init()
 
@@ -198,6 +199,7 @@ if __name__ == "__main__":
     active_row = 0
     active_col = 0
     guessed = {}
+    regex = "^[A-Za-z]+$"
     
     WHITE = (255, 255, 255)
     BLACK = (0,0,0)
@@ -218,7 +220,7 @@ if __name__ == "__main__":
                     pygame.quit()
                     sys.exit()
                 if input_active:
-                    if event.key == pygame.K_RETURN:
+                    if event.key == pygame.K_RETURN and len(guess) == 5:
                         if isValidWord(guess):
                             input_active = False
                             
@@ -252,9 +254,10 @@ if __name__ == "__main__":
                     else:
                         if active_col < cols:
                             letter = event.unicode.upper()
-                            board.set_letter(letter, active_row, active_col)
-                            active_col += 1
-                            guess += letter
+                            if re.match(regex, letter):
+                                board.set_letter(letter, active_row, active_col)
+                                active_col += 1
+                                guess += letter
                 else:
                     if event.key == pygame.K_SPACE:
                         board.reset()
