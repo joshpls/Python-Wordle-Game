@@ -5,7 +5,7 @@
  
  Example:
  
-![image](https://user-images.githubusercontent.com/22349589/152494742-dcb1a261-b6e2-4ef5-b20a-8bd1b141b4aa.png)
+![image](https://user-images.githubusercontent.com/22349589/152643764-2b0177e1-3740-4c10-9d78-56f57695cd4a.png)
 
 
 References: https://www.powerlanguage.co.uk/wordle/
