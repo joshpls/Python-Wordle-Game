@@ -307,7 +307,7 @@ def generateWord():
     return word, data
 
 if __name__ == "__main__":
-    win = pygame.display.set_mode((500, 800))
+    win = pygame.display.set_mode((500,720))
     pygame.display.set_caption("WORLDE: by Joshua Kindelberger")
 
     rows = 6
@@ -452,7 +452,7 @@ if __name__ == "__main__":
                         win.fill(BLACK)
                         drawGuessedLetters()
                         input_active = True
-                        word = generateWord()
+                        word, data = generateWord()
         
         if active_row > rows-1 and input_active:
             dispTxt = "RAN OUT OF GUESSES! THE WORD WAS: " + word
