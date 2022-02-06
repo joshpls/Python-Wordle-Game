@@ -2,6 +2,7 @@
 #          WORDLE - Python          #
 #   ----------------------------    #
 
+import json
 import random
 import pygame, sys
 import re
@@ -46,17 +47,6 @@ class Button:
     def draw(self):
         pygame.draw.rect(self.win, self.top_color, self.top_rect, border_radius = 6)
         self.win.blit(self.text_surface, self.text_rect)
-    
-    def is_clicked(self):
-        mouse_pos = pygame.mouse.get_pos()
-        self.pressed = False
-        if self.top_rect.collidepoint(mouse_pos):
-            self.top_color = "#D74B4B"
-        else:
-            self.top_color = "#475F77"
-    
-    def check_pressed(self):
-        return self.pressed == True
 
 class Node:
     GREEN = (83, 141, 78)
@@ -186,9 +176,11 @@ class Board():
         pygame.draw.rect(self.win, BLACK, [self.w-line,0,line, self.h+line])
         pygame.display.update()
 
-def isValidWord(word):
-    # TODO - Check word against dictionary.
-    return True
+def isValidWord(word, data):
+    if word.lower() in data.keys():
+        return True
+    else:
+        return False
 
 def GetCorrectGuesses(board, active_row, word, guess, guessed):
     for i in range(len(word)):
@@ -308,11 +300,11 @@ def checkWin(word, guess):
     return False
 
 def generateWord():
-    lines = open('wordle_dict.txt').read().splitlines()
-    word = random.choice(lines)
-    word = word.upper()
-    return word
-
+    dictionary = open("dictionary.json")
+    data = json.load(dictionary)
+    word = random.choice(list(data.keys())).upper()
+    dictionary.close()
+    return word, data
 
 if __name__ == "__main__":
     win = pygame.display.set_mode((500, 800))
@@ -329,7 +321,7 @@ if __name__ == "__main__":
     fnt = pygame.font.SysFont("cambria", 40)
     small_fnt = pygame.font.SysFont("cambria", 10)
     fnt2 = pygame.font.SysFont("cambria", 20)
-    word = generateWord()
+    word, data = generateWord()
     guess = ""
     input_active = True
     active_row = 0
@@ -340,6 +332,8 @@ if __name__ == "__main__":
     board = Board(win, w, h, rows, cols)
 
     board.draw()
+
+    
 
     #Initiate First Row of Letters
     QButton = Button("Q", 30, 30, (55, 550), win, fnt2)
@@ -412,7 +406,7 @@ if __name__ == "__main__":
                     sys.exit()
                 if input_active:
                     if event.key == pygame.K_RETURN and len(guess) == cols:
-                        if isValidWord(guess):
+                        if isValidWord(guess, data):
                             input_active = False
                             
                             guessed = GetCorrectGuesses(board, active_row, word, guess, guessed)
