@@ -1,0 +1,6 @@
+dist
+build
+__pycache__
+wordle.spec
+wordle.spec.bak
+WordleIcon.ico

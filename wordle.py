@@ -3,8 +3,9 @@
 #   ----------------------------    #
 
 import json
+import math
 import random
-import pygame, sys
+import pygame, sys, os
 import re
 
 pygame.init()
@@ -110,7 +111,7 @@ class Node:
         #draw coords
         #self.win.blit(posTxt, (self.x, self.y))
         #draw value
-        self.win.blit(valueTxt, (self.x + (self.width / 2)-15, self.y + (self.height / 2)-15))
+        self.win.blit(valueTxt, (self.x + (fnt.get_linesize() // 2), self.y + ((1//fnt.get_height()) + cols ) * 2 ) )
 
     def __lt__(self,other):
         return False
@@ -299,98 +300,141 @@ def checkWin(word, guess):
         return True
     return False
 
-def generateWord():
-    dictionary = open("dictionary.json")
+def generateWord(cols):
+    filename = "dict" + str(cols) + ".json"
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller >= 1.6
+        os.chdir(sys._MEIPASS)
+        filename = os.path.join(sys._MEIPASS, filename)
+    elif '_MEIPASS2' in os.environ:
+        # PyInstaller < 1.6 (tested on 1.5 only)
+        os.chdir(os.environ['_MEIPASS2'])
+        filename = os.path.join(os.environ['_MEIPASS2'], filename)
+    else:
+        os.chdir(os.path.dirname(sys.argv[0]))
+        filename = os.path.join(os.path.dirname(sys.argv[0]), filename)
+
+    dictionary = open(filename)
     data = json.load(dictionary)
     word = random.choice(list(data.keys())).upper()
     dictionary.close()
     return word, data
 
+def fontSize(cols):
+    if cols == 4:
+        fnt = pygame.font.SysFont("cambria", 26)
+    elif cols == 5:
+        fnt = pygame.font.SysFont("cambria", 24)
+    elif cols == 6:
+        fnt = pygame.font.SysFont("cambria", 22)
+    elif cols == 7:
+        fnt = pygame.font.SysFont("cambria", 20)
+    elif cols == 8:
+        fnt = pygame.font.SysFont("cambria", 18)
+    elif cols == 9:
+        fnt = pygame.font.SysFont("cambria", 16)
+    elif cols == 10:
+        fnt = pygame.font.SysFont("cambria", 14)
+    else:
+        fnt = pygame.font.SysFont("cambria", 24)
+
+    return fnt
+
 if __name__ == "__main__":
-    win = pygame.display.set_mode((500,720))
+    SCREEN_WIDTH = 300
+    SCREEN_HEIGHT = 450
+    win = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
     pygame.display.set_caption("WORLDE: by Joshua Kindelberger")
+
+    KONAMI_CODE = [pygame.K_UP, pygame.K_UP, pygame.K_DOWN, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_b, pygame.K_a]
+    code = []
+    code_index = 0
 
     rows = 6
     cols = 5
-    w = 500
-    h = 500
+    w = SCREEN_WIDTH
+    h = SCREEN_WIDTH
     WHITE = (255, 255, 255)
     BLACK = (0,0,0)
     GREEN = (83, 141, 78)
     RED = (201, 67, 52)
-    fnt = pygame.font.SysFont("cambria", 40)
-    small_fnt = pygame.font.SysFont("cambria", 10)
-    fnt2 = pygame.font.SysFont("cambria", 20)
-    word, data = generateWord()
+    YELLOW = (181, 159, 59)
+    fnt = fontSize(cols)
+    small_fnt = pygame.font.SysFont("cambria", math.floor(SCREEN_WIDTH/20))
+    fnt2 = pygame.font.SysFont("cambria", math.floor(SCREEN_WIDTH/16))
+    word, data = generateWord(cols)
     guess = ""
     input_active = True
     active_row = 0
     active_col = 0
     guessed = {}
     regex = "^[A-Za-z]+$"
+    wins_in_a_row = 0
     
     board = Board(win, w, h, rows, cols)
 
     board.draw()
 
+    buttonSize = math.floor(SCREEN_WIDTH/14)
+    buttonSpacing = math.floor(SCREEN_WIDTH/18)+10
+    buttonHeight = SCREEN_WIDTH+50
     
-
     #Initiate First Row of Letters
-    QButton = Button("Q", 30, 30, (55, 550), win, fnt2)
+    QButton = Button("Q", buttonSize, buttonSize, (20, buttonHeight), win, fnt2)
     QButton.draw()
-    WButton = Button("W", 30, 30, (95, 550), win, fnt2)
+    WButton = Button("W", buttonSize, buttonSize, (20+buttonSpacing, buttonHeight), win, fnt2)
     WButton.draw()
-    EButton = Button("E", 30, 30, (135, 550), win, fnt2)
+    EButton = Button("E", buttonSize, buttonSize, (20+buttonSpacing*2, buttonHeight), win, fnt2)
     EButton.draw()
-    RButton = Button("R", 30, 30, (175, 550), win, fnt2)
+    RButton = Button("R", buttonSize, buttonSize, (20+buttonSpacing*3, buttonHeight), win, fnt2)
     RButton.draw()
-    TButton = Button("T", 30, 30, (215, 550), win, fnt2)
+    TButton = Button("T", buttonSize, buttonSize, (20+buttonSpacing*4, buttonHeight), win, fnt2)
     TButton.draw()
-    YButton = Button("Y", 30, 30, (255, 550), win, fnt2)
+    YButton = Button("Y", buttonSize, buttonSize, (20+buttonSpacing*5, buttonHeight), win, fnt2)
     YButton.draw()
-    UButton = Button("U", 30, 30, (295, 550), win, fnt2)
+    UButton = Button("U", buttonSize, buttonSize, (20+buttonSpacing*6, buttonHeight), win, fnt2)
     UButton.draw()
-    IButton = Button("I", 30, 30, (335, 550), win, fnt2)
+    IButton = Button("I", buttonSize, buttonSize, (20+buttonSpacing*7, buttonHeight), win, fnt2)
     IButton.draw()
-    OButton = Button("O", 30, 30, (375, 550), win, fnt2)
+    OButton = Button("O", buttonSize, buttonSize, (20+buttonSpacing*8, buttonHeight), win, fnt2)
     OButton.draw()
-    PButton = Button("P", 30, 30, (415, 550), win, fnt2)
+    PButton = Button("P", buttonSize, buttonSize, (20+buttonSpacing*9, buttonHeight), win, fnt2)
     PButton.draw()
 
     #Initiate Second Row of Letters
-    AButton = Button("A", 30, 30, (75, 590), win, fnt2)
+    AButton = Button("A", buttonSize, buttonSize, (35, buttonHeight+25), win, fnt2)
     AButton.draw()
-    SButton = Button("S", 30, 30, (115, 590), win, fnt2)
+    SButton = Button("S", buttonSize, buttonSize, (35+buttonSpacing, buttonHeight+25), win, fnt2)
     SButton.draw()
-    DButton = Button("D", 30, 30, (155, 590), win, fnt2)
+    DButton = Button("D", buttonSize, buttonSize, (35+buttonSpacing*2, buttonHeight+25), win, fnt2)
     DButton.draw()
-    FButton = Button("F", 30, 30, (195, 590), win, fnt2)
+    FButton = Button("F", buttonSize, buttonSize, (35+buttonSpacing*3, buttonHeight+25), win, fnt2)
     FButton.draw()
-    GButton = Button("G", 30, 30, (235, 590), win, fnt2)
+    GButton = Button("G", buttonSize, buttonSize, (35+buttonSpacing*4, buttonHeight+25), win, fnt2)
     GButton.draw()
-    HButton = Button("H", 30, 30, (275, 590), win, fnt2)
+    HButton = Button("H", buttonSize, buttonSize, (35+buttonSpacing*5, buttonHeight+25), win, fnt2)
     HButton.draw()
-    JButton = Button("J", 30, 30, (315, 590), win, fnt2)
+    JButton = Button("J", buttonSize, buttonSize, (35+buttonSpacing*6, buttonHeight+25), win, fnt2)
     JButton.draw()
-    KButton = Button("K", 30, 30, (355, 590), win, fnt2)
+    KButton = Button("K", buttonSize, buttonSize, (35+buttonSpacing*7, buttonHeight+25), win, fnt2)
     KButton.draw()
-    LButton = Button("L", 30, 30, (395, 590), win, fnt2)
+    LButton = Button("L", buttonSize, buttonSize, (35+buttonSpacing*8, buttonHeight+25), win, fnt2)
     LButton.draw()
 
     #Initiate Third Row of Letters
-    ZButton = Button("Z", 30, 30, (115, 630), win, fnt2)
+    ZButton = Button("Z", buttonSize, buttonSize, (60, buttonHeight+50), win, fnt2)
     ZButton.draw()
-    XButton = Button("X", 30, 30, (155, 630), win, fnt2)
+    XButton = Button("X", buttonSize, buttonSize, (60+buttonSpacing, buttonHeight+50), win, fnt2)
     XButton.draw()
-    CButton = Button("C", 30, 30, (195, 630), win, fnt2)
+    CButton = Button("C", buttonSize, buttonSize, (60+buttonSpacing*2, buttonHeight+50), win, fnt2)
     CButton.draw()
-    VButton = Button("V", 30, 30, (235, 630), win, fnt2)
+    VButton = Button("V", buttonSize, buttonSize, (60+buttonSpacing*3, buttonHeight+50), win, fnt2)
     VButton.draw()
-    BButton = Button("B", 30, 30, (275, 630), win, fnt2)
+    BButton = Button("B", buttonSize, buttonSize, (60+buttonSpacing*4, buttonHeight+50), win, fnt2)
     BButton.draw()
-    NButton = Button("N", 30, 30, (315, 630), win, fnt2)
+    NButton = Button("N", buttonSize, buttonSize, (60+buttonSpacing*5, buttonHeight+50), win, fnt2)
     NButton.draw()
-    MButton = Button("M", 30, 30, (355, 630), win, fnt2)
+    MButton = Button("M", buttonSize, buttonSize, (60+buttonSpacing*6, buttonHeight+50), win, fnt2)
     MButton.draw()
 
     run = True
@@ -404,6 +448,23 @@ if __name__ == "__main__":
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == KONAMI_CODE[code_index]:
+                    code.append(event.key)
+                    code_index += 1
+                    if code == KONAMI_CODE:
+                        code_index = 0
+
+                        dispTxt = "CHEAT ACTIVATED! WORD: " + word
+                        valueTxt = small_fnt.render(str(dispTxt), 0, YELLOW)
+                        spacing = 30
+                        if cols > 8:
+                            spacing = 5
+                        if cols > 6 and cols < 9:
+                            spacing = 20
+                        win.blit(valueTxt, (spacing, SCREEN_WIDTH+15))
+                else:
+                    code = []
+                    code_index = 0
                 if input_active:
                     if event.key == pygame.K_RETURN and len(guess) == cols:
                         if isValidWord(guess, data):
@@ -416,8 +477,13 @@ if __name__ == "__main__":
 
                             if checkWin(word, guess):
                                 dispTxt = "CONGRATS! YOU WON!"
-                                valueTxt = fnt2.render(str(dispTxt), 0, GREEN)
-                                win.blit(valueTxt, (140, 510))
+                                valueTxt = small_fnt.render(str(dispTxt), 0, GREEN)
+                                win.blit(valueTxt, (70, SCREEN_WIDTH+15))
+                                wins_in_a_row +=1
+
+                                if wins_in_a_row > 1:
+                                    valueTxt = small_fnt.render("Win Streak: x" + str(wins_in_a_row), 0, YELLOW)
+                                    win.blit(valueTxt, (100, SCREEN_HEIGHT-20))
                                 input_active = False
                             else:
                                 active_row += 1
@@ -426,13 +492,13 @@ if __name__ == "__main__":
                                 input_active = True
                         else:
                             dispTxt = "WORD NOT IN DICTIONARY"
-                            valueTxt = fnt2.render(str(dispTxt), 0, RED)
-                            win.blit(valueTxt, (120, 510))
+                            valueTxt = small_fnt.render(str(dispTxt), 0, RED)
+                            win.blit(valueTxt, (50, SCREEN_WIDTH+15))
                     elif event.key == pygame.K_BACKSPACE:
                         if active_col > 0:
                             active_col -= 1
                         board.del_letter(active_row, active_col)
-                        win.fill(BLACK, pygame.Rect(0,510,500, 30))
+                        win.fill(BLACK, pygame.Rect(0,SCREEN_WIDTH+10,SCREEN_WIDTH, 30))
                         guess = guess[:-1]
 
                     else:
@@ -443,7 +509,7 @@ if __name__ == "__main__":
                                 active_col += 1
                                 guess += letter
                 else:
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                         board.reset()
                         active_col = 0
                         active_row = 0
@@ -452,14 +518,43 @@ if __name__ == "__main__":
                         win.fill(BLACK)
                         drawGuessedLetters()
                         input_active = True
-                        word, data = generateWord()
+                        word, data = generateWord(cols)
+
+                if event.key == pygame.K_EQUALS:
+                    if cols < 10:
+                        cols = cols + 1
+                        board = Board(win, w, h, rows, cols)
+                        board.reset()
+                        active_col = 0
+                        active_row = 0
+                        guess = ""
+                        guessed = {}
+                        win.fill(BLACK)
+                        fnt = fontSize(cols)
+                        drawGuessedLetters()
+                        input_active = True
+                        word, data = generateWord(cols)
+                if event.key == pygame.K_MINUS:
+                    if cols > 4:
+                        cols = cols - 1
+                        board = Board(win, w, h, rows, cols)
+                        board.reset()
+                        active_col = 0
+                        active_row = 0
+                        guess = ""
+                        guessed = {}
+                        win.fill(BLACK)
+                        fnt = fontSize(cols)
+                        drawGuessedLetters()
+                        input_active = True
+                        word, data = generateWord(cols)
         
         if active_row > rows-1 and input_active:
-            dispTxt = "RAN OUT OF GUESSES! THE WORD WAS: " + word
-            valueTxt = fnt2.render(str(dispTxt), 0, RED)
-            win.blit(valueTxt, (30, 510))
+            dispTxt = "GAME OVER! WORD WAS: " + word
+            valueTxt = small_fnt.render(str(dispTxt), 0, RED)
+            win.blit(valueTxt, (35, SCREEN_WIDTH+15))
+            wins_in_a_row = 0
             input_active = False
-        
         
         board.draw()
         
