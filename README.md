@@ -13,6 +13,13 @@
  - Only characters are allowed.
  - Check guess against dictionary.
  
- # Example:
+ # Original Version:
  
 ![image](https://user-images.githubusercontent.com/22349589/152644861-39a23b16-9833-42be-8256-2251feef9dc8.png)
+
+# Updated Version:
+- This version is a little smaller screen size, with word list for 4-10 words. Press the keys [-] and [+] to cycle up and down word length.
+- Added win streak count displayed at the bottom.
+
+![image](https://user-images.githubusercontent.com/22349589/153132331-ec1d1146-9815-4693-91f5-d88b30e5ff18.png)
+
