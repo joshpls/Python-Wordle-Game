@@ -301,12 +301,14 @@ def checkWin(word, guess):
     return False
 
 def generateWord(cols):
-    filename = "dict" + str(cols) + ".json"
+    filename = "dictionaries\dict" + str(cols) + ".json"
     if hasattr(sys, '_MEIPASS'):
+        filename = "dict" + str(cols) + ".json"
         # PyInstaller >= 1.6
         os.chdir(sys._MEIPASS)
         filename = os.path.join(sys._MEIPASS, filename)
     elif '_MEIPASS2' in os.environ:
+        filename = "dict" + str(cols) + ".json"
         # PyInstaller < 1.6 (tested on 1.5 only)
         os.chdir(os.environ['_MEIPASS2'])
         filename = os.path.join(os.environ['_MEIPASS2'], filename)
